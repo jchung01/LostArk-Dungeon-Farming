@@ -1,4 +1,4 @@
-# a dummy file to hold all shared libs and functions.
+# a file to hold all shared libs and functions.
 # use 'from lib import *' to use them
 
 import numpy as np
@@ -10,6 +10,15 @@ import random
 resolution = gui.size()
 
 def findImage(ref_img, thresh=0.7):
+    ''' Find an image using openCV template matching.
+    
+            ### Parameters:
+                `ref_img` (string): filename of target image
+                `thresh` (float): how lenient/strict the matcher should be, default of 0.7
+            
+            ### Returns:
+                `center` (tuple): (x, y) coords of the center of found image
+    '''
     img = np.array(gui.screenshot())
     grayscale_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     template = cv.imread(ref_img, 0)

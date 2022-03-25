@@ -3,16 +3,17 @@ from general import *
 
 MAP_OFFSET_X = 1595
 MAP_OFFSET_Y = 40
+ROOM2_TIME_LIMIT = 150
 start = 0
 
 def calc_map_center(bar_img):
     ''' Calculates the map center using the channel bar.
     
-            Parameters:
-                bar_img (string): filename of channel bar image
+            ### Parameters:
+                `bar_img` (string): filename of channel bar image
             
-            Returns:
-                center (tuple): (x, y) of the map center, or (-1, -1) if not found
+            ### Returns:
+                `center` (tuple): (x, y) of the map center, or (-1, -1) if not found
     '''
     img = np.array(gui.screenshot())
     grayscale_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -39,12 +40,12 @@ map_center = calc_map_center('./assets/img/map_frame_test.png')
 def calc_dir1(target_img):
     ''' Calculates the direction vector from the center of the map to a target.
                
-                Parameters:
-                    target_img (string): filename of target image
+                ### Parameters:
+                    `target_img` (string): filename of target image
                     
-                Returns:
-                    direction (tuple): (x, y) direction vector
-                    target (tuple): (x, y) position of target
+                ### Returns:
+                    `direction` (tuple): (x, y) direction vector
+                    `target` (tuple): (x, y) position of target
     '''
     # map_center = calc_map_center('./assets/img/map_frame.png')
     print("map center: ", map_center)
@@ -58,6 +59,14 @@ def calc_dir1(target_img):
     return direction, target
 
 def calc_dir2(position):
+    ''' Calculates the direction vector from the center of the map to a target (pixel version).
+               
+                ### Parameters:
+                    `position` (tuple): (x, y) position of target pixel
+                    
+                ### Returns:
+                    `direction` (tuple): (x, y) direction vector
+    '''
     # map_center = calc_map_center('./assets/img/map_frame_test.png')
     print("map center: ", map_center)
     print("target at: ", position)
@@ -69,11 +78,20 @@ def calc_dir2(position):
     return direction
 
 def closest_cmp(position):
+    ''' Comparator for pixel position from map center.
+               
+                ### Parameters:
+                    `position` (tuple): (x, y) position of pixel
+                    
+                ### Returns:
+                    `dist` (float): distance between map center and position
+    '''
     dist = np.linalg.norm(np.array(map_center) - np.array(position))
     return dist
 
 # -- functions to find specific targets -- #
 def find_portal():
+    ''' Finds portal on map, then moves to and enters it. '''
     # tune parameter to adjust consistency of getting to portal
     l = 300
     
@@ -96,6 +114,13 @@ def find_portal():
     gui.keyUp('g') 
 
 def find_elites():
+    ''' Finds the furthest elite, moves towards it, and does skill rotation. 
+    
+                Fails on conditions:
+                - if dead
+                - if 3 minutes have passed in Room 2
+                - if no more elites exist on the map
+    '''
     # distance traveled
     l = 350
     # elite attack detection radius
@@ -106,7 +131,7 @@ def find_elites():
         dead = findImage('./assets/img/dead.png')
         if dead != (-1, -1):
             break
-        if time.time() - start > 180:
+        if time.time() - start > ROOM2_TIME_LIMIT:
             break
         elites = find_elite_color()
         # sort list of elite positions, closest to center first
@@ -126,6 +151,12 @@ def find_elites():
             rotation(iters=1) 
         
 def find_elite_color():    
+    ''' Gets a list of all potential elite "positions". (by pixel color) 
+                    
+                ### Returns:
+                    `coord_list` (list[tuple]): list of coordinates of elite pixel color
+    '''
+    # HSV2RGB Elite color range
     low = (100,150,100)
     high = (110,255,255)
     #low = (100,150,0)
@@ -145,6 +176,13 @@ def find_elite_color():
     return coord_list
 
 def find_boss():
+    ''' Finds the boss, moves towards it, and does skill rotation. 
+    
+                Fails on conditions:
+                - if dead
+                - if 3 minutes have passed in Room 2
+                - if boss no longer exists on the map
+    '''
     # tune parameter to adjust consistency of getting to portal
     l = 300
     
@@ -152,6 +190,11 @@ def find_boss():
     print(boss)
     portal = findImage('./assets/img/portal.png')
     while(boss != (-1, -1)):
+        dead = findImage('./assets/img/dead.png')
+        if dead != (-1, -1):
+            break
+        if time.time() - start > ROOM2_TIME_LIMIT:
+            break
         dir, boss = calc_dir1('./assets/img/boss.png')
         gui.moveTo(resolution[0]/2, resolution[1]/2)
         gui.move(l * dir[0], l * dir[1])        
@@ -163,7 +206,7 @@ def find_boss():
         dead = findImage('./assets/img/dead.png')
         if dead != (-1, -1):
             break
-        if time.time() - start > 180:
+        if time.time() - start > ROOM2_TIME_LIMIT:
             break
         rotation(iters=1)
         boss = findImage('./assets/img/boss.png')

@@ -1,6 +1,11 @@
 from lib import *
 
 def clickConfirm(ref_img):
+    ''' Clicks a button and confirms. 
+        
+            ### Parameters:
+                `ref_img` (string): filename of target image
+    '''
     x, y = findImage(ref_img)
     gui.moveTo(x, y)
     gui.move(random.randint(1, 5), 0)
@@ -11,6 +16,11 @@ def clickConfirm(ref_img):
     gui.keyUp('enter')
 
 def rotation(iters=3):
+    ''' Executes a full skill rotation for `iters` number of times.
+                   
+                ### Parameters:
+                    `iters` (int): number of times to do skill rotation, default of 3
+    '''
     align()
     # while (findImage('./assets/img/portal.png') == (-1, -1)):
     for i in range(iters):
@@ -77,6 +87,7 @@ def rotation(iters=3):
     time.sleep(random.uniform(2.0, 2.5))
 
 def kite():
+    ''' "Dumb" kiting by moving in a rectangle. Probably drifts in some direction over time. '''
     l = 900
     l2 = 400
     x, y = (resolution[0]/2, resolution[1]/2)
@@ -106,6 +117,7 @@ def kite():
     time.sleep(1.25)
     
 def align():
+    ''' Move towards the bottom left of the map (for initial alignment). '''
     l = 600
     l2 = 400
     x, y = (resolution[0]/2, resolution[1]/2)
@@ -121,7 +133,12 @@ def align():
     time.sleep(0.5)
 
 def repair(ref_img):
-    x, y = findImage(ref_img)
+    ''' Repairs armor.
+               
+                ### Parameters:
+                    `ref_img` (string): filename of target image
+    '''
+    x, _ = findImage(ref_img)
     if x > -1:
         gui.keyDown('alt')
         gui.keyDown('p')

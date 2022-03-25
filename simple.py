@@ -8,11 +8,11 @@ from multiprocessing import Process
 
 LOAD_IN_TIME = 9
 LOAD_OUT_TIME = 26
-CHAOS_TIME = 50
 DEFENSIVE = ['d']
 AOE = ['w', 's']
-OTHER = ['a', 'f']
+OTHER = ['a', 'f', 'r']
     
+# the main script
 def executeScript():
     while True:
         repair('./assets/img/armor.png')
@@ -49,10 +49,11 @@ def executeScript():
         clickConfirm('./assets/img/leave.png')
         time.sleep(random.uniform(LOAD_OUT_TIME, LOAD_OUT_TIME + 0.5))
     
+# control script using key '0'
 def controlScript(p):
     if p.is_alive():
         p.terminate()
-        quit()
+        raise SystemExit()
     else:
         p.start()
     
