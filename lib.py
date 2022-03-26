@@ -6,8 +6,13 @@ import cv2 as cv
 import pyautogui as gui
 import time
 import random
+import glob
+import re
 
+DEFAULT_GAME_RES = (1920, 1080)
+DEFAULT_HUD_SCALE = 1.0
 resolution = gui.size()
+images = {}
 
 def findImage(ref_img, thresh=0.7):
     ''' Find an image using openCV template matching.
@@ -21,7 +26,7 @@ def findImage(ref_img, thresh=0.7):
     '''
     img = np.array(gui.screenshot())
     grayscale_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    template = cv.imread(ref_img, 0)
+    template = images[ref_img]
     w, h = template.shape[::-1]
     center = (-1, -1)
 
@@ -31,3 +36,15 @@ def findImage(ref_img, thresh=0.7):
     for pt in zip(*locs[::-1]):
         center = (pt[0] + int(w/2), pt[1] + int(h/2))
     return center
+
+# currently only supports 16:9 aspect ratio, fullscreen
+def scale_images(res, hud_scale):
+    for img in glob.glob('./assets/img/*.png'):
+        key = re.search('img\\\\(.*)\.png', img)[1]
+        print(key)
+        image = cv.imread(img, 0)
+        if res != DEFAULT_GAME_RES or hud_scale != DEFAULT_HUD_SCALE:
+            scale = res[0] / DEFAULT_GAME_RES[0]
+            dims = np.flip(tuple(int(round(s * scale * hud_scale)) for s in image[::-1].shape))
+            image = cv.resize(image, dims, interpolation=cv.INTER_AREA)
+        images[key] = image

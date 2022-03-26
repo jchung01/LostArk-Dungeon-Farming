@@ -2,6 +2,7 @@ from lib import *
 from map_finder import *
 from general import *
 
+
 # for starting/stopping script
 import keyboard
 from multiprocessing import Process
@@ -14,15 +15,16 @@ OTHER = ['a', 'f', 'r']
     
 # the main script
 def executeScript():
+    scale_images((1920, 1080), 1.0)
     while True:
-        repair('./assets/img/armor.png')
+        repair('armor')
 
         # enter dungeon
         gui.keyDown('g')
         time.sleep(random.uniform(0.05,0.1))
         gui.keyUp('g')
-        time.sleep(random.uniform(0.30, 0.45))
-        clickConfirm('./assets/img/enter.png')
+        time.sleep(random.uniform(0.5, 0.75))
+        clickConfirm('enter')
         time.sleep(random.uniform(LOAD_IN_TIME, LOAD_IN_TIME + 0.5))
 
         # room 1
@@ -39,14 +41,14 @@ def executeScript():
         # -- TO-DO -- #
         gui.moveTo(resolution[0]/2, resolution[1]/2)
         gui.click()
-        time.sleep(random.uniform(3.7, 3.9))
+        time.sleep(random.uniform(3.9, 4.1))
         find_elites()
         find_boss()
         find_portal()
 
         time.sleep(random.uniform(3.5, 4.0))
         # exit dungeon
-        clickConfirm('./assets/img/leave.png')
+        clickConfirm('leave')
         time.sleep(random.uniform(LOAD_OUT_TIME, LOAD_OUT_TIME + 0.5))
     
 # control script using key '0'

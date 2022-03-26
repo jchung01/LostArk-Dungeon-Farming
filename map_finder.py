@@ -35,7 +35,7 @@ def calc_map_center(bar_img):
         return (corner_bar[0] - int(w_map/2), corner_bar[1] + int(h_map/2))
     return corner_bar
 
-map_center = calc_map_center('./assets/img/map_frame_test.png')
+map_center = calc_map_center('./assets/img/map_frame_start.png')
 
 def calc_dir1(target_img):
     ''' Calculates the direction vector from the center of the map to a target.
@@ -67,7 +67,7 @@ def calc_dir2(position):
                 ### Returns:
                     `direction` (tuple): (x, y) direction vector
     '''
-    # map_center = calc_map_center('./assets/img/map_frame_test.png')
+    # map_center = calc_map_center('./assets/img/map_frame.png')
     print("map center: ", map_center)
     print("target at: ", position)
     # find angle of center TO target
@@ -96,10 +96,10 @@ def find_portal():
     l = 300
     
     portal = (-1, -1)
-    enter_prompt = findImage('./assets/img/move_portal.png')
+    enter_prompt = findImage('move_portal')
     # move until portal found
     while(enter_prompt == (-1, -1)):
-        dir, portal = calc_dir1('./assets/img/portal.png')
+        dir, portal = calc_dir1('portal')
         # lost/didn't find the portal location
         if portal == (-1, -1):      
             gui.click(button='right')
@@ -108,7 +108,7 @@ def find_portal():
         gui.moveTo(resolution[0]/2, resolution[1]/2)
         gui.move(l * dir[0], l * dir[1])        
         gui.click(button='right')
-        enter_prompt = findImage('./assets/img/move_portal.png')
+        enter_prompt = findImage('move_portal')
     gui.keyDown('g')
     time.sleep(random.uniform(0.05, 0.1))
     gui.keyUp('g') 
@@ -128,7 +128,7 @@ def find_elites():
     
     start = time.time()
     while True:
-        dead = findImage('./assets/img/dead.png')
+        dead = findImage('dead')
         if dead != (-1, -1):
             break
         if time.time() - start > ROOM2_TIME_LIMIT:
@@ -186,16 +186,16 @@ def find_boss():
     # tune parameter to adjust consistency of getting to portal
     l = 300
     
-    boss = findImage('./assets/img/boss.png')
+    boss = findImage('boss')
     print(boss)
-    portal = findImage('./assets/img/portal.png')
+    portal = findImage('portal')
     while(boss != (-1, -1)):
-        dead = findImage('./assets/img/dead.png')
+        dead = findImage('dead')
         if dead != (-1, -1):
             break
         if time.time() - start > ROOM2_TIME_LIMIT:
             break
-        dir, boss = calc_dir1('./assets/img/boss.png')
+        dir, boss = calc_dir1('boss')
         gui.moveTo(resolution[0]/2, resolution[1]/2)
         gui.move(l * dir[0], l * dir[1])        
         gui.mouseDown(button='right')
@@ -203,16 +203,16 @@ def find_boss():
         gui.mouseUp(button='right')
     print('boss not found')
     while(portal == (-1, -1)):
-        dead = findImage('./assets/img/dead.png')
+        dead = findImage('dead')
         if dead != (-1, -1):
             break
         if time.time() - start > ROOM2_TIME_LIMIT:
             break
         rotation(iters=1)
-        boss = findImage('./assets/img/boss.png')
+        boss = findImage('boss')
         if (boss != (-1, -1)):
             find_boss()
-        portal = findImage('./assets/img/portal.png')
+        portal = findImage('portal')
 #find_boss()
 #r = 20
 #img_test = cv.imread('./assets/img/test2.png')
