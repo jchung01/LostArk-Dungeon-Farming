@@ -3,13 +3,13 @@ from lib import *
 res_ratio = (game_res[0] / DEFAULT_GAME_RES[0], 
              game_res[1] / DEFAULT_GAME_RES[1])
 
-def clickConfirm(ref_img):
+def clickConfirm(ref_img, thresh=0.7):
     ''' Clicks a button and confirms. 
         
             ### Parameters:
                 `ref_img` (string): filename of target image
     '''
-    x, y = findImage(ref_img)
+    x, y = findImage(ref_img, thresh)
     gui.moveTo(x, y)
     gui.move(random.randint(1, 5), 0)
     gui.click()
@@ -28,7 +28,9 @@ def rotation(iters=3):
     # while (findImage('./assets/img/portal.png') == (-1, -1)):
     for i in range(iters):
         # one-shot burst
-        gui.moveTo(resolution[0]/2 - 200, resolution[1]/2 - 150)
+        # resolution-dependent
+        gui.moveTo(resolution[0]/2 - 200 * res_ratio[0],
+                   resolution[1]/2 - 150 * res_ratio[0])
         gui.keyDown('w')
         time.sleep(random.uniform(0.05, 0.1))
         gui.keyUp('w')
@@ -37,7 +39,9 @@ def rotation(iters=3):
 
         kite()
         # one-shot burst
-        gui.moveTo(resolution[0]/2 - 200, resolution[1]/2 - 150)
+        # resolution-dependent
+        gui.moveTo(resolution[0]/2 - 200 * res_ratio[0],
+                   resolution[1]/2 - 150 * res_ratio[0])
         gui.keyDown('s')
         time.sleep(random.uniform(0.05, 0.1))
         gui.keyUp('s')
@@ -63,7 +67,9 @@ def rotation(iters=3):
         time.sleep(random.uniform(0.75, 1.0))
         
         # mini burst
-        gui.moveTo(resolution[0]/2 - 200, resolution[1]/2 - 100)
+        # resolution-dependent
+        gui.moveTo(resolution[0]/2 - 200 * res_ratio[0],
+                   resolution[1]/2 - 100 * res_ratio[0])
         gui.keyDown('a')
         time.sleep(random.uniform(0.05, 0.1))
         gui.keyUp('a')
@@ -82,7 +88,9 @@ def rotation(iters=3):
         # wait for cds
         # time.sleep(random.uniform(4.5, 5.0))
     # one-shot burst
-    gui.moveTo(resolution[0]/2 - 200, resolution[1]/2 - 150)
+    # resolution-dependent
+    gui.moveTo(resolution[0]/2 - 200 * res_ratio[0],
+               resolution[1]/2 - 150 * res_ratio[0])
     gui.keyDown('w')
     time.sleep(random.uniform(0.05, 0.1))
     gui.keyUp('w')
@@ -95,7 +103,7 @@ def kite():
     # x cursor offset
     l = 900 * res_ratio[0]
     # y cursor offset
-    l2 = 350 * res_ratio[1]
+    l2 = 350 * res_ratio[0]
     x, y = (resolution[0]/2, resolution[1]/2)
     # up
     x1, y1 = (x, y-l2)
@@ -129,7 +137,7 @@ def align():
     print(res_ratio)
     l = 600 * res_ratio[0]
     # y cursor offset
-    l2 = 350 * res_ratio[1]
+    l2 = 350 * res_ratio[0]
     x, y = (resolution[0]/2, resolution[1]/2)
     # down
     x3, y3 = (x, y+l2)
@@ -156,7 +164,7 @@ def repair(ref_img):
         gui.keyUp('p')
         gui.keyUp('alt')
         time.sleep(random.uniform(1.5, 2.0))
-        clickConfirm('pet')
+        clickConfirm('pet', thresh=0.75)
         time.sleep(random.uniform(0.5, 1.0))
         clickConfirm('repair')
         gui.keyDown('esc')

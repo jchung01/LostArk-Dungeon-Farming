@@ -7,6 +7,10 @@ from general import *
 import keyboard
 from multiprocessing import Process
 
+# Tested on resolutions:
+# [1920x1200, 1920x1080, 1600x1200, 1600x900]
+# Only works on fullscreen (for now)
+
 LOAD_IN_TIME = 9
 LOAD_OUT_TIME = 26
 DEFENSIVE = ['d']
@@ -16,7 +20,6 @@ OTHER = ['a', 'f', 'r']
 # the main script
 def executeScript():
     scale_images()
-    set_center(calc_map_center('map_frame_start'))
     while True:
         repair('armor')
 

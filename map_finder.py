@@ -9,38 +9,27 @@ start = 0
 res_ratio = (game_res[0] / DEFAULT_GAME_RES[0], 
              game_res[1] / DEFAULT_GAME_RES[1])
 
-def calc_map_center(bar_img):
-    ''' Calculates the map center using the channel bar.
+# Lost Ark's rescaling formula:
+# Basically what the 16:9 equivalent resolution would be,
+# with added black bars on top/bottom
+# Implication: no y scaling compared to 16:9 equivalent!
+#
+# (x1, y1) is 1920x1080
+# (x2, y2) is current resolution
+# x: res_ratio(x2, x1) * x
+# y: res_ratio(x2, x1) * y + (y2 - 9*x2/16)/2
+# gui.moveTo((res_ratio[0] * (MAP_OFFSET_X+297/2)), 
+#          res_ratio[0]*(MAP_OFFSET_Y+255/2)+(game_res[1] - 9*game_res[0]/16)/2)
+def scaleMap(base_x=MAP_OFFSET_X, base_y=MAP_OFFSET_Y):
+    x = res_ratio[0] * base_x
+    y = res_ratio[0] * base_y + \
+        (game_res[1] - 9/16 * game_res[0])/2
+    return (x, y, 296, 255)
     
-            ### Parameters:
-                `bar_img` (string): filename of channel bar image
-            
-            ### Returns:
-                `center` (tuple): (x, y) of the map center, or (-1, -1) if not found
-    '''
-    img = np.array(gui.screenshot())
-    grayscale_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    template = images[bar_img]
-    template_offset = images['map_frame_offset']
-    template_map = images['map']
-    w_bar, h_bar = template.shape[::-1]
-    _, h_offset = template_offset.shape[::-1]
-    w_map, h_map = template_map.shape[::-1]
-    corner_bar = (-1, -1)
 
-    coords = cv.matchTemplate(grayscale_img, template, cv.TM_CCOEFF_NORMED)
-    thresh = 0.7
-
-    locs = np.where(coords >= thresh)
-    for pt in zip(*locs[::-1]):
-        corner_bar = (pt[0] + int(w_bar), pt[1] + int(h_bar+h_offset))
-    if corner_bar[0] > -1:
-        return (corner_bar[0] - int(w_map/2), corner_bar[1] + int(h_map/2))
-    return corner_bar
-
-def set_center(coords):
-    global map_center
-    map_center = coords
+map_center = scaleMap(base_x=MAP_OFFSET_X+297*(1.0+(1.0-hud_scale))/2,
+                      base_y=MAP_OFFSET_Y+255*hud_scale/2)[:2]
+# gui.moveTo(map_center)
 
 def calc_dir1(target_img):
     ''' Calculates the direction vector from the center of the map to a target.
@@ -168,8 +157,7 @@ def find_elite_color():
     #high = (110,255,255)
     # img = cv.imread('./out_raw.png')
     # img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-    img = np.array(gui.screenshot(region=(MAP_OFFSET_X * res_ratio[0], MAP_OFFSET_Y * res_ratio[1], 
-                                          297 * res_ratio[0], 256 * res_ratio[1])))
+    img = np.array(gui.screenshot(region=scaleMap()))
     img_HSV = cv.cvtColor(img, cv.COLOR_BGR2HSV)
     mask = cv.inRange(img_HSV, low, high)
     img_masked = cv.bitwise_and(img, img, mask=mask)
@@ -178,7 +166,8 @@ def find_elite_color():
     indices = np.any(img_masked != [0, 0, 0], axis=-1)
     coord_list = np.flip(np.argwhere(indices), axis=1)
     coord_list = list(map(tuple, coord_list))
-    coord_list = map(lambda coords: (coords[0]+(MAP_OFFSET_X* res_ratio[0]), coords[1]+(MAP_OFFSET_Y* res_ratio[0])), coord_list)
+    x_offset, y_offset = scaleMap()[:2]
+    coord_list = map(lambda coords: (coords[0] + x_offset, coords[1] + y_offset), coord_list)
     return coord_list
 
 def find_boss():
@@ -219,7 +208,6 @@ def find_boss():
         if (boss != (-1, -1)):
             find_boss()
         portal = findImage('portal')
-#gui.moveTo(res_ratio[0] * (MAP_OFFSET_X + 297) , res_ratio[1] * (MAP_OFFSET_Y + 256))
 #r = 20
 #img_test = cv.imread('./assets/img/test2.png')
 #cv.circle(img_test, calc_map_center('./assets/img/map_frame_test.png'), r, (0, 0, 255), cv.LINE_4)

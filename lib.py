@@ -1,6 +1,7 @@
 # a file to hold all shared libs and functions.
 # use 'from lib import *' to use them
 
+from cv2 import INTER_LINEAR
 import numpy as np
 import cv2 as cv
 import pyautogui as gui
@@ -15,7 +16,8 @@ resolution = gui.size()
 images = {}
 
 # change these parameters according to your game options
-game_res = (1920, 1080)
+game_res = (1600, 900)
+# hud scaling isn't quite accurate...
 hud_scale = 1.0
 
 
@@ -49,14 +51,17 @@ def scale_images():
         image = cv.imread(img, 0)
         if game_res != DEFAULT_GAME_RES or hud_scale != DEFAULT_HUD_SCALE:
             scale_x = game_res[0] / DEFAULT_GAME_RES[0]
-            scale_y = game_res[1] / DEFAULT_GAME_RES[1]
+            scale_y = scale_x
+            # only scale y by 16:9 equivalent
             if re.search('\_h$', key) == None:
                 scale_x *= hud_scale
                 if key != 'map_frame_offset':
                     scale_y *= hud_scale
-            
-            image = cv.resize(image, None, fx=scale_x, fy=scale_y, interpolation=cv.INTER_AREA)
-        if re.search('\_h$', key) != None:
+            interp = cv.INTER_AREA
+            if game_res[0] > DEFAULT_GAME_RES[0] or game_res[1] > DEFAULT_GAME_RES[1]:
+                interp = cv.INTER_LINEAR
+            image = cv.resize(image, None, fx=scale_x, fy=scale_y, interpolation=interp)
+        if re.search('_h$', key) != None:
             key = key[:-2]
         images[key] = image
         
