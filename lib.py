@@ -14,6 +14,11 @@ DEFAULT_HUD_SCALE = 1.0
 resolution = gui.size()
 images = {}
 
+# change these parameters according to your game options
+game_res = (1920, 1080)
+hud_scale = 1.0
+
+
 def findImage(ref_img, thresh=0.7):
     ''' Find an image using openCV template matching.
     
@@ -37,14 +42,21 @@ def findImage(ref_img, thresh=0.7):
         center = (pt[0] + int(w/2), pt[1] + int(h/2))
     return center
 
-# currently only supports 16:9 aspect ratio, fullscreen
-def scale_images(res, hud_scale):
+# currently only supports fullscreen
+def scale_images():
     for img in glob.glob('./assets/img/*.png'):
         key = re.search('img\\\\(.*)\.png', img)[1]
-        print(key)
         image = cv.imread(img, 0)
-        if res != DEFAULT_GAME_RES or hud_scale != DEFAULT_HUD_SCALE:
-            scale = res[0] / DEFAULT_GAME_RES[0]
-            dims = np.flip(tuple(int(round(s * scale * hud_scale)) for s in image[::-1].shape))
-            image = cv.resize(image, dims, interpolation=cv.INTER_AREA)
+        if game_res != DEFAULT_GAME_RES or hud_scale != DEFAULT_HUD_SCALE:
+            scale_x = game_res[0] / DEFAULT_GAME_RES[0]
+            scale_y = game_res[1] / DEFAULT_GAME_RES[1]
+            if re.search('\_h$', key) == None:
+                scale_x *= hud_scale
+                if key != 'map_frame_offset':
+                    scale_y *= hud_scale
+            
+            image = cv.resize(image, None, fx=scale_x, fy=scale_y, interpolation=cv.INTER_AREA)
+        if re.search('\_h$', key) != None:
+            key = key[:-2]
         images[key] = image
+        

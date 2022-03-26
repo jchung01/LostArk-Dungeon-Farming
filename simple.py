@@ -15,7 +15,8 @@ OTHER = ['a', 'f', 'r']
     
 # the main script
 def executeScript():
-    scale_images((1920, 1080), 1.0)
+    scale_images()
+    set_center(calc_map_center('map_frame_start'))
     while True:
         repair('armor')
 

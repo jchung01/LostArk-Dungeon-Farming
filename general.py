@@ -1,5 +1,8 @@
 from lib import *
 
+res_ratio = (game_res[0] / DEFAULT_GAME_RES[0], 
+             game_res[1] / DEFAULT_GAME_RES[1])
+
 def clickConfirm(ref_img):
     ''' Clicks a button and confirms. 
         
@@ -88,8 +91,11 @@ def rotation(iters=3):
 
 def kite():
     ''' "Dumb" kiting by moving in a rectangle. Probably drifts in some direction over time. '''
-    l = 900
-    l2 = 400
+    # resolution-dependent
+    # x cursor offset
+    l = 900 * res_ratio[0]
+    # y cursor offset
+    l2 = 350 * res_ratio[1]
     x, y = (resolution[0]/2, resolution[1]/2)
     # up
     x1, y1 = (x, y-l2)
@@ -118,8 +124,12 @@ def kite():
     
 def align():
     ''' Move towards the bottom left of the map (for initial alignment). '''
-    l = 600
-    l2 = 400
+    # resolution-dependent
+    # x cursor offset
+    print(res_ratio)
+    l = 600 * res_ratio[0]
+    # y cursor offset
+    l2 = 350 * res_ratio[1]
     x, y = (resolution[0]/2, resolution[1]/2)
     # down
     x3, y3 = (x, y+l2)
