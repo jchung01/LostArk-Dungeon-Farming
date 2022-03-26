@@ -3,7 +3,6 @@ from general import *
 
 MAP_OFFSET_X = 1595
 MAP_OFFSET_Y = 40
-ROOM2_TIME_LIMIT = 150
 map_center = (-1, -1)
 start = 0
 res_ratio = (game_res[0] / DEFAULT_GAME_RES[0], 
@@ -131,7 +130,6 @@ def find_elites():
         # sort list of elite positions, closest to center first
         elites = sorted(elites, key=lambda pos: closest_cmp(pos))
         try:
-            print(elites[-1])
             dir = calc_dir2(elites[-1])
         except:
             print('can\'t find any more elites...')
@@ -151,7 +149,7 @@ def find_elite_color():
                     `coord_list` (list[tuple]): list of coordinates of elite pixel color
     '''
     # HSV2RGB Elite color range
-    low = (100,150,100)
+    low = (100,165,100)
     high = (110,255,255)
     #low = (100,150,0)
     #high = (110,255,255)
@@ -161,8 +159,8 @@ def find_elite_color():
     img_HSV = cv.cvtColor(img, cv.COLOR_BGR2HSV)
     mask = cv.inRange(img_HSV, low, high)
     img_masked = cv.bitwise_and(img, img, mask=mask)
-    cv.imwrite('out_raw.png', cv.cvtColor(img, cv.COLOR_BGR2RGB))
-    cv.imwrite('out2.png', cv.cvtColor(img_masked, cv.COLOR_BGR2RGB))
+    # cv.imwrite('out_raw.png', cv.cvtColor(img, cv.COLOR_BGR2RGB))
+    # cv.imwrite('out2.png', cv.cvtColor(img_masked, cv.COLOR_BGR2RGB))
     indices = np.any(img_masked != [0, 0, 0], axis=-1)
     coord_list = np.flip(np.argwhere(indices), axis=1)
     coord_list = list(map(tuple, coord_list))
@@ -182,7 +180,7 @@ def find_boss():
     l = 300 * res_ratio[0]
     
     boss = findImage('boss')
-    print(boss)
+    print('boss: ', boss)
     portal = findImage('portal')
     while(boss != (-1, -1)):
         dead = findImage('dead')

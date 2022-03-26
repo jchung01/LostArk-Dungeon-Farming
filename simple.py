@@ -12,23 +12,30 @@ from multiprocessing import Process
 # Only works on fullscreen (for now)
 
 LOAD_IN_TIME = 9
-LOAD_OUT_TIME = 26
+LOAD_OUT_TIME = 10
 DEFENSIVE = ['d']
 AOE = ['w', 's']
 OTHER = ['a', 'f', 'r']
     
-# the main script
 def executeScript():
+    print(res_ratio)
     scale_images()
+    mainScript()
+    
+# the main script
+def mainScript():
     while True:
         repair('armor')
-
+        
         # enter dungeon
         gui.keyDown('g')
         time.sleep(random.uniform(0.05,0.1))
         gui.keyUp('g')
         time.sleep(random.uniform(0.5, 0.75))
-        clickConfirm('enter')
+        try:
+            clickConfirm('enter')
+        except:
+            mainScript()
         time.sleep(random.uniform(LOAD_IN_TIME, LOAD_IN_TIME + 0.5))
 
         # room 1

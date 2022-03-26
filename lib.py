@@ -12,11 +12,12 @@ import re
 
 DEFAULT_GAME_RES = (1920, 1080)
 DEFAULT_HUD_SCALE = 1.0
+ROOM2_TIME_LIMIT = 120
 resolution = gui.size()
 images = {}
 
 # change these parameters according to your game options
-game_res = (1600, 900)
+game_res = (1920, 1080)
 # hud scaling isn't quite accurate...
 hud_scale = 1.0
 

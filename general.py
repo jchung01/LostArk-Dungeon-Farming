@@ -10,6 +10,8 @@ def clickConfirm(ref_img, thresh=0.7):
                 `ref_img` (string): filename of target image
     '''
     x, y = findImage(ref_img, thresh)
+    if (x, y) == (-1, -1):
+        raise NameError('template not found...')
     gui.moveTo(x, y)
     gui.move(random.randint(1, 5), 0)
     gui.click()
@@ -134,7 +136,6 @@ def align():
     ''' Move towards the bottom left of the map (for initial alignment). '''
     # resolution-dependent
     # x cursor offset
-    print(res_ratio)
     l = 600 * res_ratio[0]
     # y cursor offset
     l2 = 350 * res_ratio[0]
