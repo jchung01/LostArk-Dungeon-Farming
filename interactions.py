@@ -1,4 +1,4 @@
-from lib import *
+from utils import *
 
 res_ratio = (game_res[0] / DEFAULT_GAME_RES[0], 
              game_res[1] / DEFAULT_GAME_RES[1])
@@ -20,6 +20,7 @@ def clickConfirm(ref_img, thresh=0.7):
     time.sleep(random.uniform(0.05, 0.1))
     gui.keyUp('enter')
 
+# The skill rotation is based on a specific set of keybinds for the Artillerist class.
 def rotation(iters=3):
     ''' Executes a full skill rotation for `iters` number of times.
                    
@@ -29,19 +30,19 @@ def rotation(iters=3):
     align()
     # while (findImage('./assets/img/portal.png') == (-1, -1)):
     for i in range(iters):
-        # one-shot burst
-        # resolution-dependent
+        # One-shot burst
+        # Resolution-dependent
         gui.moveTo(resolution[0]/2 - 200 * res_ratio[0],
                    resolution[1]/2 - 150 * res_ratio[0])
         gui.keyDown('w')
         time.sleep(random.uniform(0.05, 0.1))
         gui.keyUp('w')
-        # cast time
+        # Cast time
         time.sleep(random.uniform(0.6, 0.8))
-
         kite()
-        # one-shot burst
-        # resolution-dependent
+        
+        # One-shot burst
+        # Resolution-dependent
         gui.moveTo(resolution[0]/2 - 200 * res_ratio[0],
                    resolution[1]/2 - 150 * res_ratio[0])
         gui.keyDown('s')
@@ -50,70 +51,69 @@ def rotation(iters=3):
         gui.keyDown('s')
         time.sleep(random.uniform(0.075, 0.125))
         gui.keyUp('s')
-        # cast time
+        # Cast time
         time.sleep(random.uniform(1.75, 2.0))
-
         kite()
-        # defensive
+        
+        # Defensive
         gui.keyDown('d')
         time.sleep(random.uniform(0.05, 0.1))
         gui.keyUp('d')
-        # cast time
+        # Cast time
         time.sleep(random.uniform(0.25, 0.5))
         
-        # other (turret)
+        # Other (turret)
         gui.keyDown('f')
         time.sleep(random.uniform(0.05, 0.1))
         gui.keyUp('f')
-        # cast time
+        # Cast time
         time.sleep(random.uniform(0.75, 1.0))
         
-        # mini burst
-        # resolution-dependent
+        # Mini burst
+        # Resolution-dependent
         gui.moveTo(resolution[0]/2 - 200 * res_ratio[0],
                    resolution[1]/2 - 100 * res_ratio[0])
         gui.keyDown('a')
         time.sleep(random.uniform(0.05, 0.1))
         gui.keyUp('a')
-        # cast time
+        # Cast time
         time.sleep(random.uniform(0.6, 0.8))
         
-        # dot
+        # DoT
         gui.keyDown('r')
         time.sleep(random.uniform(0.05, 0.1))
         gui.keyUp('r')
-        # cast time
+        # Cast time
         time.sleep(random.uniform(1.25, 1.5))
-        
         # kite()
-        
-        # wait for cds
+        # Wait for cds
         # time.sleep(random.uniform(4.5, 5.0))
-    # one-shot burst
-    # resolution-dependent
+    # One-shot burst
+    # Resolution-dependent
     gui.moveTo(resolution[0]/2 - 200 * res_ratio[0],
                resolution[1]/2 - 150 * res_ratio[0])
     gui.keyDown('w')
     time.sleep(random.uniform(0.05, 0.1))
     gui.keyUp('w')
-    # cast time
+    
+    # Cast time
     time.sleep(random.uniform(2.0, 2.5))
 
 def kite():
-    ''' "Dumb" kiting by moving in a rectangle. Probably drifts in some direction over time. '''
-    # resolution-dependent
-    # x cursor offset
+    ''' Primitive kiting by moving in a rectangle. Probably drifts in some direction over time. '''
+    # Resolution-dependent
+    # X cursor offset
     l = 900 * res_ratio[0]
-    # y cursor offset
+    # Y cursor offset
     l2 = 350 * res_ratio[0]
     x, y = (resolution[0]/2, resolution[1]/2)
-    # up
+    # Up
     x1, y1 = (x, y-l2)
-    # left
+    # Left
     x2, y2 = (x-l, y)
-    # down
+    # Down
     x3, y3 = (x, y+l2)
-    # right
+    # Right
     x4, y4 = (x+l, y)
     
     gui.moveTo(x1, y1)
@@ -134,15 +134,15 @@ def kite():
     
 def align():
     ''' Move towards the bottom left of the map (for initial alignment). '''
-    # resolution-dependent
-    # x cursor offset
+    # Resolution-dependent
+    # X cursor offset
     l = 600 * res_ratio[0]
-    # y cursor offset
+    # Y cursor offset
     l2 = 350 * res_ratio[0]
     x, y = (resolution[0]/2, resolution[1]/2)
-    # down
+    # Down
     x3, y3 = (x, y+l2)
-    # right
+    # Right
     x4, y4 = (x+l, y)
     gui.moveTo(x3, y3)
     gui.click(button='right')

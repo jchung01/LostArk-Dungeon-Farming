@@ -1,9 +1,9 @@
-from lib import *
+from utils import *
 from map_finder import *
-from general import *
+from interactions import *
 
 
-# for starting/stopping script
+# For starting/stopping script
 import keyboard
 from multiprocessing import Process
 
@@ -22,12 +22,12 @@ def executeScript():
     scale_images()
     mainScript()
     
-# the main script
+# The main script
 def mainScript():
     while True:
         repair('armor')
         
-        # enter dungeon
+        # Enter dungeon
         gui.keyDown('g')
         time.sleep(random.uniform(0.05,0.1))
         gui.keyUp('g')
@@ -38,17 +38,17 @@ def mainScript():
             mainScript()
         time.sleep(random.uniform(LOAD_IN_TIME, LOAD_IN_TIME + 0.5))
 
-        # room 1
+        # Room 1
         gui.moveTo(resolution[0]/2, resolution[1]/2)
         gui.click()
         time.sleep(random.uniform(3.7, 3.9))
         rotation()
             
-        # find next room
+        # Find next room
         find_portal()
         time.sleep(random.uniform(3.5, 4.0))
         
-        # room 2
+        # Room 2
         # -- TO-DO -- #
         gui.moveTo(resolution[0]/2, resolution[1]/2)
         gui.click()
@@ -58,11 +58,11 @@ def mainScript():
         find_portal()
 
         time.sleep(random.uniform(3.5, 4.0))
-        # exit dungeon
+        # Exit dungeon
         clickConfirm('leave')
         time.sleep(random.uniform(LOAD_OUT_TIME, LOAD_OUT_TIME + 0.5))
     
-# control script using key '0'
+# Control script using key '0'
 def controlScript(p):
     if p.is_alive():
         p.terminate()
